@@ -1,21 +1,26 @@
-const path = require('path');
 const fs = require('fs');
-const request = require('request');
 const rp = require('request-promise');
 
-rp('https://reddit.com/r/popular.json', (err, res, body) => {
-    if(err) console.log(err);
-    
-    let articleArray = [];
+rp('https://reddit.com/r/popular.json')
+    .then(res => JSON.parse(res))
+    .then((data) => {
 
-    JSON.parse(body).data.children.forEach(item => {
-        articleArray.push({
-            title: item.data.title,
-            url: item.data.url,
-            author: item.data.author
+        let articleArray = [];
+
+        data.data.children.forEach(item => {
+            articleArray.push({
+                title: item.data.title,
+
+                url: item.data.url,
+
+                author: item.data.author
+            });
+
+            let article = JSON.stringify(articleArray);
+            fs.writeFileSync("popular-articles.json", article);
         });
-
-        let articles = JSON.stringify(articleArray);
-        fs.writeFileSync("popular-articles.json", articles);
+    })
+    .catch(function (err) {
+        console.log(err);
     });
-});
+
