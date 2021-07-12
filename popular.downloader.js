@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs');
-//const request = require('request');
 const rp = require('request-promise');
 
 const options = {
@@ -18,7 +17,7 @@ rp('https://reddit.com/r/popular.json', options)
 
                 rp(imageRequestOptions)
                     .then(function (image) {
-                        fsWriteFile(`./downloads/${item.data.id}$/{path.extname(item.data.url)}`, image, "base64", function (err) {
+                        fs.writeFile(`./downloads/${item.data.id}${path.extname(item.data.url)}`, image, "base64", function (err) {
                             if (err) throw err;
                             console.log("saved");
                         })
